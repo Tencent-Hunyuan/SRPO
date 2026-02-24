@@ -192,7 +192,7 @@ bash scripts/preprocess/preprocess_qwen_rl_embeddings.sh
 Prepare an offline `.pkl` file that maps captions to image paths:
 
 ```python
-img_path = offline_dict["An image of a cat"]
+image_path = offline_dict["An image of a cat"]
 ```
 
 Bucket the data so that samples in the same batch share the same resolution (otherwise the program will hang):
