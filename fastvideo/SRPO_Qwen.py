@@ -1072,7 +1072,7 @@ def main(args):
         disable=local_rank > 0,
     )
     step_times = deque(maxlen=100)
-    ast=0
+    global_step = 0
     for epoch in range(1000000):
         if isinstance(sampler, DistributedSampler):
             sampler.set_epoch(epoch) # Crucial for distributed shuffling per epoch
@@ -1082,7 +1082,7 @@ def main(args):
             prompt_embeds_n = prompt_embeds_n.to(device)
             prompt_attention_masks_n = prompt_attention_masks_n.to(device)
             start_time = time.time()
-            step=ast
+            step = global_step
             if step == args.checkpointing_steps:
                save_checkpoint_bf16(transformer, rank, args.output_dir,
                                 step, epoch)
@@ -1115,7 +1115,7 @@ def main(args):
             optimizer.step()
             lr_scheduler.step()
             optimizer.zero_grad()
-            ast+=1
+            global_step+=1
             loss_type = 'rm_loss'
             step_time = time.time() - start_time
             step_times.append(step_time)
