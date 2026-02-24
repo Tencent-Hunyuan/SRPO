@@ -2,13 +2,13 @@
 <h1 align="center">Directly Aligning the Full Diffusion Trajectory with Fine-Grained Human Preference </h1>
 <div align="center">
   <a href='https://arxiv.org/abs/2509.06942'><img src='https://img.shields.io/badge/ArXiv-red?logo=arxiv'></a>  &nbsp;
-  <a href='https://huggingface.co/tencent/SRPO/'><img src='https://img.shields.io/badge/Model-blue?logo=huggingface'></a> &nbsp; 
+  <a href='https://huggingface.co/tencent/SRPO/'><img src='https://img.shields.io/badge/Flux-blue?logo=huggingface'></a> &nbsp;
   <a href='https://tencent.github.io/srpo-project-page/'><img src='https://img.shields.io/badge/%F0%9F%92%BB_Project-SRPO-blue'></a> &nbsp;
 </div>
 <div align="center">
   Xiangwei Shen<sup>1,2,3*</sup>,
   <a href="https://scholar.google.com/citations?user=Lnr1FQEAAAAJ&hl=zh-CN" target="_blank"><b>Zhimin Li</b></a><sup>1*</sup>,
-  <a href="https://scholar.google.com.hk/citations?user=Fz3X5FwAAAAJ" target="_blank"><b>Zhantao Yang</b></a><sup>1</sup>, 
+  <a href="https://scholar.google.com.hk/citations?user=Fz3X5FwAAAAJ" target="_blank"><b>Zhantao Yang</b></a><sup>1</sup>,
   <a href="https://shiyi-zh0408.github.io/" target="_blank"><b>Shiyi Zhang</b></a><sup>3</sup>,
   Yingfang Zhang<sup>1</sup>,
   Donghao Li<sup>1</sup>,
@@ -18,14 +18,14 @@
   <a href="https://andytang15.github.io" target="_blank"><b>Yansong Tang</b></a><sup>3,✉️</sup>
 </div>
 <div align="center">
-  <sup>1</sup>Hunyuan, Tencent 
+  <sup>1</sup>Hunyuan, Tencent
   <br>
-  <sup>2</sup>School of Science and Engineering, The Chinese University of Hong Kong, Shenzhen 
+  <sup>2</sup>School of Science and Engineering, The Chinese University of Hong Kong, Shenzhen
   <br>
-  <sup>3</sup>Shenzhen International Graduate School, Tsinghua University 
+  <sup>3</sup>Shenzhen International Graduate School, Tsinghua University
   <br>
-  <sup>*</sup>Equal contribution 
-  <sup>✝</sup>Project lead 
+  <sup>*</sup>Equal contribution
+  <sup>✝</sup>Project lead
   <sup>✉️</sup>Corresponding author
 </div>
 
@@ -38,62 +38,75 @@
 4. **Potential for Controllable Fine-tuning**: For the first time in online RL, we incorporate dynamically controllable text conditions, enabling on-the-fly adjustment of reward preference towards styles within the scope of the reward model.
 
 ## 🔥 News
-- __[2025.10.26]__: 👑 **We achieved the Top1 on [Artificial Analysis Leaderboard](https://artificialanalysis.ai/image/leaderboard/text-to-image?open-weights=true) for text-to-image open-source models.**
+- __[2026.2.24]__:  🎉 We released the training code for online/offline training by SRPO, built upon the Qwen-Image.
+- __[2025.10.26]__: 👑 We achieved the Top1 on [Artificial Analysis Leaderboard](https://artificialanalysis.ai/image/leaderboard/text-to-image?open-weights=true) for text-to-image open-source models.
   
   <img width="701" height="213" alt="image" src="https://github.com/user-attachments/assets/bc8765c3-5a1e-4e66-89f8-368136ec8492" />
 - __[2025.9.12]__:  🎉 We released the complete training code. We also share tips and experiences to help you train your models. You’re welcome to discuss and ask questions in the issues! 💬✨
 - __[2025.9.12]__:  🎉 We provide a standard workflow—feel free to use it in ComfyUI.
 - __[2025.9.8]__:   🎉 We released the paper, checkpoint, inference code.
 
-## 📑 Open-source Plan
-- [X] The training code is under internal review and will be open-sourced by this weekend at the latest.
-- [ ] Release a quantized version for the FLUX community.
-- [ ] Extend support to other models.
+
+## 📑 Open-Source Plan
+
+- [x] Training code (FLUX.1-dev)
+- [x] Support Qwen-Image
+- [ ] Extend support to other models (Qwen-Image-Edit, FLUX 2 etc.)
 
 ## 🛠️ Dependencies and Installation
 
 ```bash
 conda create -n SRPO python=3.10.16 -y
 conda activate SRPO
-bash ./env_setup.sh 
+bash ./env_setup.sh
 ```
-💡 The environment dependency is basically the same as DanceGRPO
+
+> 💡 The environment dependencies are essentially the same as [DanceGRPO](https://github.com/XueZeyue/DanceGRPO).
 
 ## 🤗 Download Models
 
-1. Model Cards
+### Model Cards
 
-|       Model       |                           Huggingface Download URL                                      |  
-|:-----------------:|:---------------------------------------------------------------------------------------:|
-|       SRPO        |           [diffusion_pytorch_model](https://huggingface.co/tencent/SRPO/tree/main)      |
+| Model | Hugging Face Download URL |
+| :---: | :-----------------------: |
+| SRPO  | [diffusion_pytorch_model](https://huggingface.co/tencent/SRPO/tree/main) |
 
-2. Download our `diffusion_pytorch_model.safetensors` in [https://huggingface.co/tencent/SRPO]
+### Download SRPO Checkpoint
+
+Download `diffusion_pytorch_model.safetensors` from [Hugging Face](https://huggingface.co/tencent/SRPO):
+
 ```bash
-mkdir ./srpo
+mkdir -p ./srpo
 huggingface-cli login
 huggingface-cli download --resume-download Tencent/SRPO diffusion_pytorch_model.safetensors --local-dir ./srpo/
 ```
-3. Load your FLUX cache or use the `black-forest-labs/FLUX.1-dev`[https://huggingface.co/black-forest-labs/FLUX.1-dev]
+
+### Download Base Model
+
+Load your FLUX cache or download [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev):
+
 ```bash
-mkdir ./data/flux
+mkdir -p ./data/flux
 huggingface-cli login
-huggingface-cli download --resume-download  black-forest-labs/FLUX.1-dev --local-dir ./data/flux
+huggingface-cli download --resume-download black-forest-labs/FLUX.1-dev --local-dir ./data/flux
 ```
 
 ## 🔑 Inference
 
 ### Using ComfyUI
 
-You can use it in [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
+You can use SRPO in [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
 
-Load the following image in ComfyUI to get the workflow, or load the JSON file directly [SRPO-workflow](comfyui/SRPO-workflow.json):
+Load the following image in ComfyUI to get the workflow, or load the JSON file directly: [SRPO-workflow](comfyui/SRPO-workflow.json).
 
-Tip: The workflow JSON info was added to the image file.
+> **Tip:** The workflow JSON info is embedded in the image file.
 
 ![Example](comfyui/SRPO-workflow.png)
 
-### Quick start
-```bash
+### Quick Start
+
+```python
+import torch
 from diffusers import FluxPipeline
 from safetensors.torch import load_file
 
@@ -115,16 +128,20 @@ image = pipe(
 ).images[0]
 ```
 
-Inference with our cases. Replace `model_path` in `vis.py`.
+### Batch Inference
+
+Run inference with our example cases. Replace `model_path` in `vis.py` before running:
+
 ```bash
 torchrun --nnodes=1 --nproc_per_node=8 \
     --node_rank 0 \
     --rdzv_endpoint $CHIEF_IP:29502 \
     --rdzv_id 456 \
-    vis.py 
+    vis.py
 ```
 
 ## 🚚 Training
+
 ### Prepare Training Model
 1. Pretrain Model: download the FLUX.dev.1 checkpoints from [huggingface](https://huggingface.co/black-forest-labs/FLUX.1-dev) to `./data/flux`.
 ```bash
@@ -147,72 +164,128 @@ huggingface-cli login
 python ./scripts/huggingface/download_hf.py --repo_id yuvalkirstain/PickScore_v1  --local_dir ./data/ps
 python ./scripts/huggingface/download_hf.py --repo_id laion/CLIP-ViT-H-14-laion2B-s32B-b79K --local_dir ./data/clip
 ```
-
 ### Prepare Training Data
 
+#### Pre-Extract Text Embeddings
+
+For online version, no image-text pairs are needed — only text prompts.
+
 ```bash
-# Write training prompts into ./prompts.txt. Note: For online RL, no image-text pairs are needed—only inference text.
-via ./prompts.txt
-# Pre-extract text embeddings from your custom training dataset—this boosts training efficiency.
+# Write training prompts into ./prompts.txt
+vim ./prompts.txt
+
+# Pre-extract text embeddings from your custom training dataset to boost training efficiency
 bash scripts/preprocess/preprocess_flux_rl_embeddings.sh
-cp videos2caption2.json  ./data/rl_embeddings
+
+# Copy your caption file to the embeddings directory
+cp videos2caption2.json ./data/rl_embeddings
 ```
 
-### Full-parameter Training
+For Qwen-Image:
 
-- HPS-v2.1 serves as the Reward Model in our reinforcement learning process.
-    ```bash 
+```bash
+bash scripts/preprocess/preprocess_qwen_rl_embeddings.sh
+```
+
+#### (Optional) Prepare Offline Data
+
+Prepare an offline `.pkl` file that maps captions to image paths:
+
+```python
+img_path = offline_dict["An image of a cat"]
+```
+
+Bucket the data so that samples in the same batch share the same resolution (otherwise the program will hang):
+
+```bash
+python prepare_prompt.py \
+    --input_json <../data/rl_embeddings/videos2caption.json> \
+    --output_json <output_path.json> \
+    --batch_size 64
+```
+
+### Full-Parameter Training
+
+#### FLUX
+
+- **HPS-v2.1** as Reward Model:
+
+    ```bash
     bash scripts/finetune/SRPO_training_hpsv2.sh
     ```
-- (Optional) PickScore serves as the Reward Model in our reinforcement learning process.
+
+- **(Optional) PickScore** as Reward Model:
+
     ```bash
     bash scripts/finetune/SRPO_training_ps.sh
     ```
-    > ⚠️ Current control words are designed for HPS-v2.1, so training with PickScore may yield suboptimal results vs. HPS due to this mismatch. 
 
-- Run distributed training with pdsh.
-  ```bash
+    > ⚠️ The current control words are designed for HPS-v2.1, so training with PickScore may yield suboptimal results compared to HPS due to this mismatch.
+
+- **Distributed training** with `pdsh`:
+
+    ```bash
     #!/bin/bash
     echo "$NODE_IP_LIST" | tr ',' '\n' | sed 's/:8$//' | grep -v '1.1.1.1' > /tmp/pssh.hosts
     node_ip=$(paste -sd, /tmp/pssh.hosts)
-    pdsh -w $node_ip "conda activate SRPO;cd <project path>; bash scripts/finetune/SRPO_training_hpsv2.sh"
-  ```
+    pdsh -w $node_ip "conda activate SRPO; cd <project_path>; bash scripts/finetune/SRPO_training_hpsv2.sh"
+    ```
+
+#### Qwen-Image
+
+- **HPS-v2.1** as Reward Model:
+
+    ```bash
+    bash scripts/finetune/SRPO_training_qwen.sh
+    ```
+
+- **Offline Training Parameters:**
+
+    | Parameter | Type | Description |
+    | :--- | :--- | :--- |
+    | `--offline_end` | `int` | Training step at which to switch from offline to online mode. Default: `-1` (disables the switch; runs in online mode only). |
+    | `--offline_dict` | `str` | Path to the offline data `.pkl` file. Must be a dictionary mapping captions to image paths: `{caption: image_path}`. |
+
 ### How to Support Custom Models
-1. Modify `preprocess_flux_embedding.py` and `latent_flux_rl_datasets.py` to pre-extract text embeddings from your custom training dataset—this boosts training efficiency.
-2. Adjust `args.vis_sampling_step` to modify sigma_schedule. Typically, this value matches the model's regular inference steps.
-3. Direct-propagation needs significant GPU memory. Enabling VAE gradient checkpointing before reward calculation reduces this greatly.
-4. If implementing outside FastVideo, first disable the inversion branch to check for reward hacking—its presence likely indicates correct implementation.
-5. Pure Direct-Align works for SRPO-unsupported tasks (e.g., OCR, Image Editing) with minimal code changes.
+
+1. Modify `preprocess_flux_embedding.py` and `latent_flux_rl_datasets.py` to pre-extract text embeddings from your custom training dataset — this boosts training efficiency.
+2. Adjust `args.vis_sampling_step` to modify the sigma schedule. Typically, this value should match the model's regular inference steps.
+3. Direct propagation requires significant GPU memory. Enabling VAE gradient checkpointing before reward calculation reduces memory usage greatly.
+4. If implementing outside FastVideo, first disable the inversion branch to check for reward hacking — its presence likely indicates a correct implementation.
+5. Pure Direct-Align works for SRPO-unsupported tasks (e.g., OCR, image editing) with minimal code changes.
 
 ### Hyperparameter Recommendations
+
 For best results, use these settings as a starting point and adjust for your model/dataset:
 
-1. **Batch_size**: Larger sizes generally improve quality more. For Flux.dev.1 reinforcement under current settings, 32 works well.
-2. **Learning_rate**: 1e-5 to 1e-6 works for most models.
-3. **Train_timestep**: Focus on early-to-middle diffusion stages. Too early (e.g., sigmas>0.99) causes structural distortions; too late encourages color-based reward hacking.
-4. **Discount_inv** & **Discount_denoise**: Let discount_inv = [a, b], discount_denoise = [c, d]. Preserve structure by setting c slightly > b (avoids early layout corruption). Fix color oversaturation by setting a slightly > d (tempers aggressive tones). Current hyperparameters work for most in-house models and are a good baseline.
+1. **`batch_size`**: Larger sizes generally improve quality. For FLUX.1-dev reinforcement learning under current settings, 32 works well.
+2. **`learning_rate`**: Values in the range of 1e-5 to 1e-6 work for most models.
+3. **`train_timestep`**: Focus on early-to-middle diffusion stages. Too early (e.g., `sigma > 0.99`) causes structural distortions; too late encourages color-based reward hacking.
+4. **`discount_inv`** & **`discount_denoise`**: Let `discount_inv = [a, b]`, `discount_denoise = [c, d]`. To preserve structure, set `c` slightly greater than `b` (avoids early layout corruption). To fix color oversaturation, set `a` slightly greater than `d` (tempers aggressive tones). The current hyperparameters work well for most in-house models and serve as a good baseline.
 
-## 🎉Acknowledgement
+## 🎉 Acknowledgement
 
-We referenced the following works, and appreciate their contributions to the community.
+We referenced the following works, and appreciate their contributions to the community:
 
 - [FastVideo](https://github.com/hao-ai-lab/FastVideo)
 - [DanceGRPO](https://github.com/XueZeyue/DanceGRPO)
 
 ## 🔗 BibTeX
+
 If you find SRPO useful for your research and applications, please cite using this BibTeX:
-```
+
+```bibtex
 @misc{shen2025directlyaligningdiffusiontrajectory,
-      title={Directly Aligning the Full Diffusion Trajectory with Fine-Grained Human Preference}, 
+      title={Directly Aligning the Full Diffusion Trajectory with Fine-Grained Human Preference},
       author={Xiangwei Shen and Zhimin Li and Zhantao Yang and Shiyi Zhang and Yingfang Zhang and Donghao Li and Chunyu Wang and Qinglin Lu and Yansong Tang},
       year={2025},
       eprint={2509.06942},
       archivePrefix={arXiv},
       primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2509.06942}, 
+      url={https://arxiv.org/abs/2509.06942},
 }
 ```
 
-
 ## Star History
+
 [![Star History Chart](https://api.star-history.com/svg?repos=Tencent-Hunyuan/SRPO&type=Date)](https://www.star-history.com/#Tencent-Hunyuan/SRPO&Date)
