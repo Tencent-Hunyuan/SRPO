@@ -82,10 +82,9 @@ def save_checkpoint_bf16(transformer, rank, output_dir, step, epoch):
         os.makedirs(save_dir, exist_ok=True)
 
         weight_path = os.path.join(save_dir, "diffusion_pytorch_model.safetensors")
-        save_file(bf16_state, weight_path) # <--- 使用 bf16_state
+        save_file(bf16_state, weight_path) 
         main_print(f"Saved bfloat16 weights to {weight_path}")
 
-        # 4. 保存配置文件（这部分不变）
         config_dict = dict(transformer.config)
         if "dtype" in config_dict:
             del config_dict["dtype"]
