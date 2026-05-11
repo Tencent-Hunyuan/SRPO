@@ -61,7 +61,38 @@ def save_checkpoint_optimizer(model,
         torch.save(optim_state, optimizer_path)
     main_print(f"--> checkpoint saved at step {step}")
 
+def save_checkpoint_bf16(transformer, rank, output_dir, step, epoch):
+    main_print(f"--> saving checkpoint at step {step}")
+    with FSDP.state_dict_type(
+            transformer,
+            StateDictType.FULL_STATE_DICT,
+            FullStateDictConfig(offload_to_cpu=True, rank0_only=True),
+    ):
+        cpu_state = transformer.state_dict()
+    # todo move to get_state_dict
+    if rank <= 0:
+        main_print("Converting state dict to bfloat16 for saving...")
+        bf16_state = {
+            key: value.to(torch.bfloat16) if value.is_floating_point() else value
+            for key, value in cpu_state.items()
+        }
+        main_print("Conversion complete.")
 
+        save_dir = os.path.join(output_dir, f"checkpoint-{step}-{epoch}")
+        os.makedirs(save_dir, exist_ok=True)
+
+        weight_path = os.path.join(save_dir, "diffusion_pytorch_model.safetensors")
+        save_file(bf16_state, weight_path) # <--- 使用 bf16_state
+        main_print(f"Saved bfloat16 weights to {weight_path}")
+
+        # 4. 保存配置文件（这部分不变）
+        config_dict = dict(transformer.config)
+        if "dtype" in config_dict:
+            del config_dict["dtype"]
+        config_path = os.path.join(save_dir, "config.json")
+        with open(config_path, "w") as f:
+            json.dump(config_dict, f, indent=4)
+    main_print(f"--> checkpoint saved at step {step}")
 def save_checkpoint(transformer, rank, output_dir, step, epoch):
     main_print(f"--> saving checkpoint at step {step}")
     with FSDP.state_dict_type(
